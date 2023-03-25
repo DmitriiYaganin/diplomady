@@ -33,6 +33,21 @@ services:
       - "8000:8000"
     volumes:
       - ./todolist:/opt/todolist
+  bot:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev_image
+    env_file: .env
+    restart: always
+    environment:
+      POSTGRES_HOST: db
+    depends_on:
+      db:
+        condition: service_healthy
+    command: python manage.py runbot
+    volumes:
+      - ./todolist:/opt/todolist
 
   collect_static:
     build:
@@ -47,7 +62,7 @@ services:
 
 
   frontend:
-    image: sermalenk/skypro-front:lesson-37
+    image: sermalenk/skypro-front:lesson-38
     restart: always
     ports:
       - "80:80"
